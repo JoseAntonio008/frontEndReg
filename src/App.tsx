@@ -1,7 +1,12 @@
 import "./App.css";
+import { FormReg } from "./pages/Register";
 
 function App() {
-  return <div>Hello world!</div>;
+  return (
+    <>
+      <FormReg />
+    </>
+  );
 }
 
 export default App;
