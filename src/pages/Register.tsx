@@ -147,7 +147,9 @@ export function FormReg() {
               borderRadius: "5px",
               my: "5px",
             }}
-          ></Stack>
+          >
+            <Typography></Typography>
+          </Stack>
         </FormControl>
       </Stack>
     </>
