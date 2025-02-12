@@ -10,8 +10,10 @@ import {
   FormControlLabel,
   FormLabel,
   RadioGroupProps,
+  Button,
 } from "@mui/material";
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
+import { formDataRegistration } from "../constant";
 
 const customFocus = {
   color: "black", // Default color
@@ -33,10 +35,9 @@ export function FormReg() {
   const [typeOfSchool, setTypeofSchool] = useState("");
   const [courseTransferee, setCoursetransferee] = useState("");
   const [residencyTransferee, setResidencyTransferee] = useState("");
-
+  const [formData, setFormData] = useState(formDataRegistration);
   const handleRadioChange: RadioGroupProps["onChange"] = (event) => {
     const value = event.target.value;
-    console.log(value);
 
     setShs(value);
 
@@ -48,21 +49,58 @@ export function FormReg() {
     target: { value: SetStateAction<string> };
   }) => {
     setOtherAwards(event.target.value);
-    console.log(event.target.value);
   };
   const handleOtherYear = (event: {
     target: { value: SetStateAction<string> };
   }) => {
     setOtherYearGraduated(event.target.value);
-    console.log(event.target.value);
   };
   const handleOtherShs = (event: {
     target: { value: SetStateAction<string> };
   }) => {
     setOtherShs(event.target.value);
-    console.log(otherShs);
+
     // setShs(event.target.value);
   };
+  
+  
+  const handleSubmit = () => {
+    try {
+      if (formData.schoolAddress === "") throw new Error("empty");
+
+      if (formData.yearGraduated === "others") {
+        setFormData((prevData) => {
+          const updatedData = {
+            ...prevData,
+            yearGraduated: otherYearGraduated,
+          };
+
+          return updatedData;
+        });
+      }
+      if (formData.shs === "others") {
+        setFormData((prevData) => {
+          const updatedData = { ...prevData, shs: otherShs };
+
+          return updatedData;
+        });
+      }
+      if (formData.awardsReceived === "others") {
+        setFormData((prevData) => {
+          const updatedData = { ...prevData, awardsReceived: otherAwards };
+
+          return updatedData;
+        });
+        console.log(`submitted Form Data:`, formData);
+      } else {
+        console.log(`submitted Form Data:`, formData);
+      }
+    } catch (error) {
+      console.log(error);
+      
+    }
+  };
+  useEffect(() => {}, [formData]);
   return (
     <>
       <AppBar position="sticky" color="success">
@@ -135,6 +173,8 @@ export function FormReg() {
               variant="standard"
               autoComplete="off"
               name="email"
+              value={formData.email}
+              onChange={handleChange}
               type="email"
               sx={{ mb: "5px" }}
             ></TextField>
@@ -207,11 +247,11 @@ export function FormReg() {
             <RadioGroup
               aria-labelledby="student-Type"
               name="studentType"
-              value={studentType}
-              onChange={(event) => setStudentType(event.target.value)}
+              value={formData.studentType}
+              onChange={handleChange}
             >
               <FormControlLabel
-                value={"newStudent"}
+                value={"New Student"}
                 label="New Student - Senior High School Graduate (Never been to college) / SHS Student Graduating this Current Semester"
                 control={<Radio />}
               ></FormControlLabel>
@@ -222,19 +262,19 @@ export function FormReg() {
               ></FormControlLabel>
 
               <FormControlLabel
-                value={"returningStudent"}
+                value={"Returning Student"}
                 label="Returning Student - A DLSP/PLSP student who dropped out but wants to return to school."
                 control={<Radio />}
               ></FormControlLabel>
 
               <FormControlLabel
-                value={"2ndDegreeTaker"}
+                value={"2nd Degree Taker"}
                 label="2nd Degree Taker - Students who already completed a 2-year or 4-year course"
                 control={<Radio />}
               ></FormControlLabel>
             </RadioGroup>
           </Stack>
-          {studentType === "newStudent" && (
+          {formData.studentType === "New Student" && (
             <Stack>
               <Stack
                 sx={{
@@ -248,8 +288,8 @@ export function FormReg() {
                 <RadioGroup
                   aria-labelledby="residency"
                   name="residency"
-                  value={residency}
-                  onChange={(event) => setResidency(event.target.value)}
+                  value={formData.residency}
+                  onChange={handleChange}
                 >
                   <FormControlLabel
                     value={"resident"}
@@ -275,8 +315,8 @@ export function FormReg() {
                 <RadioGroup
                   aria-labelledby="shs"
                   name="shs"
-                  value={shs}
-                  onChange={handleRadioChange}
+                  value={formData.shs}
+                  onChange={handleChange}
                 >
                   <FormControlLabel
                     value={"Academia de San Ignacio de Loyola"}
@@ -442,7 +482,7 @@ export function FormReg() {
                     control={<Radio />}
                     label="Others"
                   />
-                  {shs === "others" && (
+                  {formData.shs === "others" && (
                     <TextField
                       label="Specify Other"
                       variant="outlined"
@@ -465,8 +505,8 @@ export function FormReg() {
                 <RadioGroup
                   aria-labelledby="schoolType"
                   name="schoolType"
-                  value={schoolType}
-                  onChange={(event) => setSchoolType(event.target.value)}
+                  value={formData.schoolType}
+                  onChange={handleChange}
                 >
                   <FormControlLabel
                     value={"public"}
@@ -492,6 +532,9 @@ export function FormReg() {
                 <TextField
                   variant="standard"
                   label="Enter School Address here."
+                  name="schoolAddress"
+                  value={formData.schoolAddress}
+                  onChange={handleChange}
                 ></TextField>
               </Stack>
               <Stack
@@ -506,8 +549,8 @@ export function FormReg() {
                 <RadioGroup
                   aria-labelledby="yearGraduated"
                   name="yearGraduated"
-                  value={yearGraduated}
-                  onChange={(event) => setYearGraduated(event.target.value)}
+                  value={formData.yearGraduated}
+                  onChange={handleChange}
                 >
                   <FormControlLabel
                     value={"2020-2021"}
@@ -529,7 +572,7 @@ export function FormReg() {
                     label="others"
                     control={<Radio />}
                   ></FormControlLabel>
-                  {yearGraduated === "others" && (
+                  {formData.yearGraduated === "others" && (
                     <TextField
                       label="Specify Other"
                       variant="outlined"
@@ -552,8 +595,8 @@ export function FormReg() {
                 <RadioGroup
                   aria-labelledby="awardsReceived"
                   name="awardsReceived"
-                  value={awards}
-                  onChange={(event) => setAwards(event.target.value)}
+                  value={formData.awardsReceived}
+                  onChange={handleChange}
                 >
                   <FormControlLabel
                     value={"with Honor"}
@@ -580,7 +623,7 @@ export function FormReg() {
                     label="others"
                     control={<Radio />}
                   ></FormControlLabel>
-                  {awards === "others" && (
+                  {formData.awardsReceived === "others" && (
                     <TextField
                       label="Specify Other"
                       variant="outlined"
@@ -594,7 +637,7 @@ export function FormReg() {
             </Stack>
           )}
 
-          {studentType === "transferee" && (
+          {formData.studentType === "transferee" && (
             <Stack>
               <Stack
                 sx={{
@@ -765,7 +808,7 @@ export function FormReg() {
             </Stack>
           )}
 
-          {studentType === "returningStudent" && (
+          {formData.studentType === "Returning Student" && (
             <Stack
               sx={{ padding: "10px", border: "1px solid gray", my: "5px" }}
             >
@@ -782,7 +825,7 @@ export function FormReg() {
             </Stack>
           )}
 
-          {studentType === "2ndDegreeTaker" && (
+          {formData.studentType === "2nd Degree Taker" && (
             <Stack>
               <AppBar
                 position="sticky"
@@ -826,6 +869,11 @@ export function FormReg() {
               </Stack>
             </Stack>
           )}
+          <Stack direction={"row"}>
+            <Button variant="contained" color="success" onClick={handleSubmit}>
+              <Typography>Submit</Typography>
+            </Button>
+          </Stack>
         </FormControl>
       </Stack>
     </>
