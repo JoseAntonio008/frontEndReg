@@ -62,7 +62,9 @@ export function FormReg() {
 
     // setShs(event.target.value);
   };
-  
+  const handleChange = (event: { target: { name: any; value: any; }; }) => {
+    setFormData({ ...formData, [event.target.name]: event.target.value });
+  };
   
   const handleSubmit = () => {
     try {
@@ -193,6 +195,7 @@ export function FormReg() {
               variant="standard"
               autoComplete="off"
               name="firstName"
+              onChange={handleChange}
               sx={{ mb: "5px" }}
             ></TextField>
           </Stack>
@@ -213,6 +216,7 @@ export function FormReg() {
               variant="standard"
               autoComplete="off"
               name="middleName"
+              onChange={handleChange}
               sx={{ mb: "5px" }}
             ></TextField>
           </Stack>
@@ -230,6 +234,7 @@ export function FormReg() {
               variant="standard"
               autoComplete="off"
               name="lastName"
+              onChange={handleChange}
               sx={{ mb: "5px" }}
             ></TextField>
           </Stack>
