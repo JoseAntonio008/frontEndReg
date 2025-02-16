@@ -1,5 +1,6 @@
 export const formDataRegistration = {
   email: "",
+  emailError:'',
   firstName: "",
   middleName: "",
   lastName: "",
@@ -11,4 +12,22 @@ export const formDataRegistration = {
   schoolAddress:"",
   yearGraduated:""
 
+};
+
+
+export const validateField = (name:string, value:string) => {
+  switch (name) {
+    case "email":
+      if (!value) return "Email is required";
+      if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value)) return "Invalid email format";
+      return ""; // No error
+
+    case "password":
+      if (!value) return "Password is required";
+      if (value.length < 6) return "Password must be at least 6 characters";
+      return ""; // No error
+
+    default:
+      return "";
+  }
 };

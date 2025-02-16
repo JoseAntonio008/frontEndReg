@@ -9,11 +9,10 @@ import {
   Radio,
   FormControlLabel,
   FormLabel,
-  RadioGroupProps,
   Button,
 } from "@mui/material";
 import { SetStateAction, useEffect, useState } from "react";
-import { formDataRegistration } from "../constant";
+import { formDataRegistration, validateField } from "../constant";
 
 const customFocus = {
   color: "black", // Default color
@@ -23,28 +22,16 @@ const customFocus = {
 };
 
 export function FormReg() {
-  const [studentType, setStudentType] = useState("");
-  const [residency, setResidency] = useState("");
-  const [shs, setShs] = useState("");
   const [otherShs, setOtherShs] = useState("");
-  const [schoolType, setSchoolType] = useState("");
-  const [yearGraduated, setYearGraduated] = useState("");
+
   const [otherYearGraduated, setOtherYearGraduated] = useState("");
-  const [awards, setAwards] = useState("");
+
   const [otherAwards, setOtherAwards] = useState("");
   const [typeOfSchool, setTypeofSchool] = useState("");
   const [courseTransferee, setCoursetransferee] = useState("");
   const [residencyTransferee, setResidencyTransferee] = useState("");
   const [formData, setFormData] = useState(formDataRegistration);
-  const handleRadioChange: RadioGroupProps["onChange"] = (event) => {
-    const value = event.target.value;
 
-    setShs(value);
-
-    if (value !== "others") {
-      setOtherShs(""); // Reset input if another option is selected
-    }
-  };
   const handleOtherAwards = (event: {
     target: { value: SetStateAction<string> };
   }) => {
@@ -62,14 +49,14 @@ export function FormReg() {
 
     // setShs(event.target.value);
   };
-  const handleChange = (event: { target: { name: any; value: any; }; }) => {
-    setFormData({ ...formData, [event.target.name]: event.target.value });
+  const handleChange = (event: { target: { name: any; value: any } }) => {
+    const errorMessage = validateField(event.target.name, event.target.value);
+    setFormData({ ...formData, [event.target.name]: event.target.value,[`${event.target.name}Error`]: errorMessage  });
+    
   };
-  
+
   const handleSubmit = () => {
     try {
-      if (formData.schoolAddress === "") throw new Error("empty");
-
       if (formData.yearGraduated === "others") {
         setFormData((prevData) => {
           const updatedData = {
@@ -99,7 +86,6 @@ export function FormReg() {
       }
     } catch (error) {
       console.log(error);
-      
     }
   };
   useEffect(() => {}, [formData]);
@@ -177,6 +163,8 @@ export function FormReg() {
               name="email"
               value={formData.email}
               onChange={handleChange}
+              error={!!formData.emailError}
+              helperText={formData.emailError}
               type="email"
               sx={{ mb: "5px" }}
             ></TextField>
