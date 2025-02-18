@@ -51,12 +51,17 @@ export function FormReg() {
   };
   const handleChange = (event: { target: { name: any; value: any } }) => {
     const errorMessage = validateField(event.target.name, event.target.value);
-    setFormData({ ...formData, [event.target.name]: event.target.value,[`${event.target.name}Error`]: errorMessage  });
-    
+    setFormData({
+      ...formData,
+      [event.target.name]: event.target.value,
+      [`${event.target.name}Error`]: errorMessage,
+    });
   };
 
   const handleSubmit = () => {
     try {
+      // if (formData.emailError != "") throw new Error("empty");
+
       if (formData.yearGraduated === "others") {
         setFormData((prevData) => {
           const updatedData = {
@@ -183,6 +188,9 @@ export function FormReg() {
               variant="standard"
               autoComplete="off"
               name="firstName"
+              value={formData.firstName}
+              error={!!formData.firstNameError}
+              helperText={formData.firstNameError}
               onChange={handleChange}
               sx={{ mb: "5px" }}
             ></TextField>
