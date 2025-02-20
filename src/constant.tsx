@@ -21,6 +21,20 @@ export const formDataRegistration = {
   schoolAddressError: "",
   yearGraduated: "",
   yearGraduatedError: "",
+  schoolTypeCollege: "",
+  schoolTypeCollegeError: "",
+  nameCollege: "",
+  nameCollegeError: "",
+  courseEnrolled: "",
+  courseEnrolledError: "",
+  highestAttainedYear: "",
+  highestAttainedYearError: "",
+  courseCompleter: "",
+  courseCompleterError: "",
+  courseCompleted: "",
+  courseCompletedError: "",
+  schoolGraduated: "",
+  schoolGraduatedError: "",
 };
 
 export const validateField = (name: string, value: string) => {

@@ -10,6 +10,7 @@ import {
   FormControlLabel,
   FormLabel,
   Button,
+  FormHelperText,
 } from "@mui/material";
 import { SetStateAction, useEffect, useState } from "react";
 import { formDataRegistration, validateField } from "../constant";
@@ -29,7 +30,7 @@ export function FormReg() {
   const [otherAwards, setOtherAwards] = useState("");
   const [typeOfSchool, setTypeofSchool] = useState("");
   const [courseTransferee, setCoursetransferee] = useState("");
-  const [residencyTransferee, setResidencyTransferee] = useState("");
+  const [residency, setresidency] = useState("");
   const [formData, setFormData] = useState(formDataRegistration);
 
   const handleOtherAwards = (event: {
@@ -46,6 +47,7 @@ export function FormReg() {
     target: { value: SetStateAction<string> };
   }) => {
     setOtherShs(event.target.value);
+    console.log(otherShs);
 
     // setShs(event.target.value);
   };
@@ -60,40 +62,32 @@ export function FormReg() {
 
   const handleSubmit = () => {
     try {
-      // if (formData.emailError != "") throw new Error("empty");
+      setFormData((prevData) => {
+        let updatedData = { ...prevData };
 
-      if (formData.yearGraduated === "others") {
-        setFormData((prevData) => {
-          const updatedData = {
-            ...prevData,
-            yearGraduated: otherYearGraduated,
-          };
+        if (prevData.yearGraduated === "others") {
+          updatedData.yearGraduated = otherYearGraduated;
+        }
 
-          return updatedData;
-        });
-      }
-      if (formData.shs === "others") {
-        setFormData((prevData) => {
-          const updatedData = { ...prevData, shs: otherShs };
+        if (prevData.shs === "others") {
+          updatedData.shs = otherShs;
+        }
 
-          return updatedData;
-        });
-      }
-      if (formData.awardsReceived === "others") {
-        setFormData((prevData) => {
-          const updatedData = { ...prevData, awardsReceived: otherAwards };
+        if (prevData.awardsReceived === "others") {
+          updatedData.awardsReceived = otherAwards;
+        }
 
-          return updatedData;
-        });
-        console.log(`submitted Form Data:`, formData);
-      } else {
-        console.log(`submitted Form Data:`, formData);
-      }
+        return updatedData;
+      });
+
+      // Use a timeout to wait for state updates before logging
     } catch (error) {
-      console.log(error);
+      console.log("Error submitting form:", error);
     }
   };
-  useEffect(() => {}, [formData]);
+  useEffect(() => {
+    console.log("Submitted Form Data:", formData);
+  }, [formData]);
   return (
     <>
       <AppBar position="sticky" color="success">
@@ -103,7 +97,12 @@ export function FormReg() {
           </Typography>
         </Toolbar>
       </AppBar>
-      <Stack direction={"column"} sx={{ padding: "20px" }}>
+      <Stack
+        direction={"column"}
+        sx={{
+          padding: "20px",
+        }}
+      >
         <Stack
           sx={{
             padding: "20px",
@@ -286,23 +285,28 @@ export function FormReg() {
                 }}
               >
                 <Typography variant="h6">New Student Info</Typography>
-                <RadioGroup
-                  aria-labelledby="residency"
-                  name="residency"
-                  value={formData.residency}
-                  onChange={handleChange}
-                >
-                  <FormControlLabel
-                    value={"resident"}
-                    label="Resident of San Pablo"
-                    control={<Radio />}
-                  ></FormControlLabel>
-                  <FormControlLabel
-                    value={"nonResident"}
-                    label="Nonresident of San Pablo"
-                    control={<Radio />}
-                  ></FormControlLabel>
-                </RadioGroup>
+                <FormControl error={!!formData.residencyError}>
+                  <RadioGroup
+                    aria-labelledby="residency"
+                    name="residency"
+                    value={formData.residency}
+                    onChange={handleChange}
+                  >
+                    <FormControlLabel
+                      value={"resident"}
+                      label="Resident of San Pablo"
+                      control={<Radio />}
+                    ></FormControlLabel>
+                    <FormControlLabel
+                      value={"nonResident"}
+                      label="Nonresident of San Pablo"
+                      control={<Radio />}
+                    ></FormControlLabel>
+                  </RadioGroup>
+                </FormControl>
+                {formData.residencyError && (
+                  <FormHelperText>{formData.residencyError}</FormHelperText>
+                )}
               </Stack>
               <Stack
                 sx={{
@@ -648,29 +652,36 @@ export function FormReg() {
                   my: "5px",
                 }}
               >
-                <Typography variant="h6">Type of School</Typography>
-                <RadioGroup
-                  aria-labelledby="typeOfSchool"
-                  name="typeOfSchool"
-                  value={typeOfSchool}
-                  onChange={(event) => setTypeofSchool(event.target.value)}
-                >
-                  <FormControlLabel
-                    value={"Private College/University"}
-                    label="Private College/University"
-                    control={<Radio />}
-                  ></FormControlLabel>
-                  <FormControlLabel
-                    value={"Local College or University"}
-                    label="Local College or University"
-                    control={<Radio />}
-                  ></FormControlLabel>
-                  <FormControlLabel
-                    value={"State College/University"}
-                    label="State College/University"
-                    control={<Radio />}
-                  ></FormControlLabel>
-                </RadioGroup>
+                <FormControl error={!!formData.awardsReceivedError}>
+                  <Typography variant="h6">Type of School</Typography>
+                  <RadioGroup
+                    aria-labelledby="typeOfSchool"
+                    name="typeOfSchool"
+                    value={formData.schoolTypeCollege}
+                    onChange={handleChange}
+                  >
+                    <FormControlLabel
+                      value={"Private College/University"}
+                      label="Private College/University"
+                      control={<Radio />}
+                    ></FormControlLabel>
+                    <FormControlLabel
+                      value={"Local College or University"}
+                      label="Local College or University"
+                      control={<Radio />}
+                    ></FormControlLabel>
+                    <FormControlLabel
+                      value={"State College/University"}
+                      label="State College/University"
+                      control={<Radio />}
+                    ></FormControlLabel>
+                  </RadioGroup>
+                  {formData.awardsReceivedError && (
+                    <FormHelperText>
+                      {formData.awardsReceivedError}
+                    </FormHelperText>
+                  )}
+                </FormControl>
               </Stack>
               <Stack
                 sx={{
@@ -683,6 +694,11 @@ export function FormReg() {
                 <Typography variant="h6">Name of College</Typography>
                 <Typography>School where you came from</Typography>
                 <TextField
+                  value={formData.nameCollege}
+                  onChange={handleChange}
+                  error={!!formData.nameCollegeError}
+                  helperText={formData.nameCollegeError}
+                  name="nameCollege"
                   placeholder="Enter your School Name here."
                   variant="standard"
                 ></TextField>
@@ -700,6 +716,10 @@ export function FormReg() {
                   Course/Program you enrolled in the school where you came from
                 </Typography>
                 <TextField
+                  value={formData.courseEnrolled}
+                  error={!!formData.courseEnrolledError}
+                  helperText={formData.courseEnrolledError}
+                  onChange={handleChange}
                   placeholder="Enter your Course in your Previous College"
                   variant="standard"
                 ></TextField>
@@ -715,38 +735,45 @@ export function FormReg() {
                 <Typography variant="h6">
                   Highest completed/attained year
                 </Typography>
-                <RadioGroup
-                  aria-labelledby="courseTransferee"
-                  name="courseTransferee"
-                  value={courseTransferee}
-                  onChange={(event) => setCoursetransferee(event.target.value)}
-                >
-                  <FormControlLabel
-                    value={"1st"}
-                    label="1st"
-                    control={<Radio />}
-                  ></FormControlLabel>
-                  <FormControlLabel
-                    value={"2nd"}
-                    label="2nd"
-                    control={<Radio />}
-                  ></FormControlLabel>
-                  <FormControlLabel
-                    value={"3rd"}
-                    label="3rd"
-                    control={<Radio />}
-                  ></FormControlLabel>
-                  <FormControlLabel
-                    value={"4th"}
-                    label="4th"
-                    control={<Radio />}
-                  ></FormControlLabel>
-                  <FormControlLabel
-                    value={"5th"}
-                    label="5th"
-                    control={<Radio />}
-                  ></FormControlLabel>
-                </RadioGroup>
+                <FormControl error={!!formData.highestAttainedYearError}>
+                  <RadioGroup
+                    aria-labelledby="courseTransferee"
+                    name="courseTransferee"
+                    value={formData.highestAttainedYear}
+                    onChange={handleChange}
+                  >
+                    <FormControlLabel
+                      value={"1st"}
+                      label="1st"
+                      control={<Radio />}
+                    ></FormControlLabel>
+                    <FormControlLabel
+                      value={"2nd"}
+                      label="2nd"
+                      control={<Radio />}
+                    ></FormControlLabel>
+                    <FormControlLabel
+                      value={"3rd"}
+                      label="3rd"
+                      control={<Radio />}
+                    ></FormControlLabel>
+                    <FormControlLabel
+                      value={"4th"}
+                      label="4th"
+                      control={<Radio />}
+                    ></FormControlLabel>
+                    <FormControlLabel
+                      value={"5th"}
+                      label="5th"
+                      control={<Radio />}
+                    ></FormControlLabel>
+                  </RadioGroup>
+                </FormControl>
+                {formData.highestAttainedYearError && (
+                  <FormHelperText>
+                    {formData.highestAttainedYearError}
+                  </FormHelperText>
+                )}
               </Stack>
               <Stack
                 sx={{
@@ -759,6 +786,10 @@ export function FormReg() {
                 <Typography variant="h6">School Address</Typography>
                 <TextField
                   variant="standard"
+                  value={formData.schoolAddress}
+                  error={!!formData.schoolAddressError}
+                  helperText={formData.schoolAddressError}
+                  onChange={handleChange}
                   placeholder="Enter your Previous School Address here."
                 ></TextField>
               </Stack>
@@ -773,6 +804,10 @@ export function FormReg() {
                 <Typography variant="h6">Awards</Typography>
                 <TextField
                   variant="standard"
+                  value={formData.awardsReceived}
+                  error={!!formData.awardsReceivedError}
+                  helperText={formData.awardsReceivedError}
+                  onChange={handleChange}
                   placeholder="Enter the title of the Awards you Attained in your Previous School here."
                 ></TextField>
               </Stack>
@@ -784,27 +819,29 @@ export function FormReg() {
                   my: "5px",
                 }}
               >
-                {" "}
                 <Typography variant="h6">Residency</Typography>
-                <RadioGroup
-                  aria-labelledby="residencyTransferee"
-                  name="residencyTransferee"
-                  value={residencyTransferee}
-                  onChange={(event) =>
-                    setResidencyTransferee(event.target.value)
-                  }
-                >
-                  <FormControlLabel
-                    value={"resident"}
-                    label="Resident of San Pablo"
-                    control={<Radio />}
-                  ></FormControlLabel>
-                  <FormControlLabel
-                    value={"nonResident"}
-                    label="Nonresident of San Pablo"
-                    control={<Radio />}
-                  ></FormControlLabel>
-                </RadioGroup>
+                <FormControl error={!!formData.residencyError}>
+                  <RadioGroup
+                    aria-labelledby="residency"
+                    name="residency"
+                    value={formData.residency}
+                    onChange={handleChange}
+                  >
+                    <FormControlLabel
+                      value={"resident"}
+                      label="Resident of San Pablo"
+                      control={<Radio />}
+                    ></FormControlLabel>
+                    <FormControlLabel
+                      value={"nonResident"}
+                      label="Nonresident of San Pablo"
+                      control={<Radio />}
+                    ></FormControlLabel>
+                  </RadioGroup>
+                </FormControl>
+                {formData.residencyError && (
+                  <FormHelperText>{formData.residencyError}</FormHelperText>
+                )}
               </Stack>
             </Stack>
           )}
@@ -829,7 +866,7 @@ export function FormReg() {
           {formData.studentType === "2nd Degree Taker" && (
             <Stack>
               <AppBar
-                position="sticky"
+                position="relative"
                 color="success"
                 sx={{ borderTopLeftRadius: "5px", borderTopRightRadius: "5px" }}
               >
@@ -861,12 +898,164 @@ export function FormReg() {
                 sx={{
                   padding: "20px",
                   border: "1px solid rgb(71, 71, 71)",
-                  borderTop: "none",
+                  borderRadius: "5px",
                   my: "5px",
-                  mt: "0",
                 }}
               >
                 <Typography variant="h6">Resident Type</Typography>
+                <FormControl error={!!formData.residencyError}>
+                  <RadioGroup
+                    aria-labelledby="residency"
+                    name="residency"
+                    value={formData.residency}
+                    onChange={handleChange}
+                  >
+                    <FormControlLabel
+                      value={"resident"}
+                      label="Resident of San Pablo"
+                      control={<Radio />}
+                    ></FormControlLabel>
+                    <FormControlLabel
+                      value={"nonResident"}
+                      label="Nonresident of San Pablo"
+                      control={<Radio />}
+                    ></FormControlLabel>
+                  </RadioGroup>
+                </FormControl>
+                {formData.residencyError && (
+                  <FormHelperText>{formData.residencyError}</FormHelperText>
+                )}
+              </Stack>
+              <Stack
+                sx={{
+                  padding: "20px",
+                  border: "1px solid rgb(71, 71, 71)",
+                  borderRadius: "5px",
+                  my: "5px",
+                }}
+              >
+                <Typography variant="h6">
+                  2-Year or 4-Year Course Complete
+                </Typography>
+                <FormControl error={!!formData.courseCompleterError}>
+                  <RadioGroup
+                    aria-labelledby="courseCompleter"
+                    name="courseCompleter"
+                    value={formData.courseCompleter}
+                    onChange={handleChange}
+                  >
+                    <FormControlLabel
+                      value={"2-year course completer"}
+                      label="2-year course completer"
+                      control={<Radio />}
+                    ></FormControlLabel>
+                    <FormControlLabel
+                      value={"4-year course completer"}
+                      label="4-year course completer"
+                      control={<Radio />}
+                    ></FormControlLabel>
+                  </RadioGroup>
+                </FormControl>
+                {formData.courseCompleterError && (
+                  <FormHelperText>
+                    {formData.courseCompleterError}
+                  </FormHelperText>
+                )}
+              </Stack>
+              <Stack
+                sx={{
+                  padding: "20px",
+                  border: "1px solid rgb(71, 71, 71)",
+                  borderRadius: "5px",
+                  my: "5px",
+                }}
+              >
+                <Typography variant="h6">Course/Program Completed</Typography>
+                <TextField
+                  variant="standard"
+                  label="Completed Course"
+                  placeholder="Enter your Course Completed here."
+                  name="courseCompleted"
+                  value={formData.courseCompleted}
+                  error={!!formData.courseCompletedError}
+                  helperText={formData.courseCompletedError}
+                  onChange={handleChange}
+                ></TextField>
+              </Stack>
+              <Stack
+                sx={{
+                  padding: "20px",
+                  border: "1px solid rgb(71, 71, 71)",
+                  borderRadius: "5px",
+                  my: "5px",
+                }}
+              >
+                <Typography variant="h6">Year completed/graduated</Typography>
+                <TextField
+                  variant="standard"
+                  placeholder="Enter Year Course Completed here."
+                  name="yearGraduated"
+                  value={formData.yearGraduated}
+                  error={!!formData.yearGraduatedError}
+                  helperText={formData.yearGraduatedError}
+                  onChange={handleChange}
+                ></TextField>
+              </Stack>
+              <Stack
+                sx={{
+                  padding: "20px",
+                  border: "1px solid rgb(71, 71, 71)",
+                  borderRadius: "5px",
+                  my: "5px",
+                }}
+              >
+                <Typography variant="h6">School Graduated</Typography>
+                <TextField
+                  variant="standard"
+                  placeholder="Enter the Name of the School you graduated."
+                  name="schoolGraduated"
+                  value={formData.schoolGraduated}
+                  error={!!formData.schoolGraduatedError}
+                  helperText={formData.schoolGraduatedError}
+                  onChange={handleChange}
+                ></TextField>
+              </Stack>
+              <Stack
+                sx={{
+                  padding: "20px",
+                  border: "1px solid rgb(71, 71, 71)",
+                  borderRadius: "5px",
+                  my: "5px",
+                }}
+              >
+                <Typography variant="h6">School Address</Typography>
+                <TextField
+                  variant="standard"
+                  placeholder="Enter your School Address here."
+                  name="schoolAddress"
+                  value={formData.schoolAddress}
+                  error={!!formData.schoolAddressError}
+                  helperText={formData.schoolAddressError}
+                  onChange={handleChange}
+                ></TextField>
+              </Stack>
+              <Stack
+                sx={{
+                  padding: "20px",
+                  border: "1px solid rgb(71, 71, 71)",
+                  borderRadius: "5px",
+                  my: "5px",
+                }}
+              >
+                <Typography variant="h6">Awards Received</Typography>
+                <TextField
+                  variant="standard"
+                  name="awardsReceived"
+                  value={formData.awardsReceived}
+                  error={!!formData.awardsReceivedError}
+                  helperText={formData.awardsReceivedError}
+                  onChange={handleChange}
+                ></TextField>
               </Stack>
             </Stack>
           )}
