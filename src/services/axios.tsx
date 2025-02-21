@@ -12,3 +12,11 @@ protectedService.interceptors.request.use((config) => {
   config.headers.Authorization = `Bearer ${localStorage.getItem("token")}`;
   return config;
 });
+
+export const submitForm = async ():Promise<any> => {
+  try {
+    const submit = await apiService.post()
+  } catch (error) {
+    
+  }
+}

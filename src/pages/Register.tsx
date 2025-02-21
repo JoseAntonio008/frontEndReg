@@ -656,7 +656,7 @@ export function FormReg() {
                   <Typography variant="h6">Type of School</Typography>
                   <RadioGroup
                     aria-labelledby="typeOfSchool"
-                    name="typeOfSchool"
+                    name="schoolTypeCollege"
                     value={formData.schoolTypeCollege}
                     onChange={handleChange}
                   >
@@ -716,6 +716,7 @@ export function FormReg() {
                   Course/Program you enrolled in the school where you came from
                 </Typography>
                 <TextField
+                  name="courseEnrolled"
                   value={formData.courseEnrolled}
                   error={!!formData.courseEnrolledError}
                   helperText={formData.courseEnrolledError}
@@ -737,8 +738,8 @@ export function FormReg() {
                 </Typography>
                 <FormControl error={!!formData.highestAttainedYearError}>
                   <RadioGroup
-                    aria-labelledby="courseTransferee"
-                    name="courseTransferee"
+                    aria-labelledby="highestAttainedYear"
+                    name="highestAttainedYear"
                     value={formData.highestAttainedYear}
                     onChange={handleChange}
                   >
@@ -785,6 +786,7 @@ export function FormReg() {
               >
                 <Typography variant="h6">School Address</Typography>
                 <TextField
+                  name="schoolAddress"
                   variant="standard"
                   value={formData.schoolAddress}
                   error={!!formData.schoolAddressError}
@@ -803,6 +805,7 @@ export function FormReg() {
               >
                 <Typography variant="h6">Awards</Typography>
                 <TextField
+                  name="awardsReceived"
                   variant="standard"
                   value={formData.awardsReceived}
                   error={!!formData.awardsReceivedError}
@@ -848,7 +851,12 @@ export function FormReg() {
 
           {formData.studentType === "Returning Student" && (
             <Stack
-              sx={{ padding: "10px", border: "1px solid gray", my: "5px" }}
+              sx={{
+                padding: "20px",
+                border: "1px solid rgb(71, 71, 71)",
+                borderRadius: "5px",
+                my: "5px",
+              }}
             >
               <Typography variant="h6">Returning Student</Typography>
               <Typography>
