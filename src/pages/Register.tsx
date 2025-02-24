@@ -51,42 +51,72 @@ export function FormReg() {
 
     // setShs(event.target.value);
   };
-  const handleChange = (event: { target: { name: any; value: any } }) => {
-    const errorMessage = validateField(event.target.name, event.target.value);
-    setFormData({
-      ...formData,
-      [event.target.name]: event.target.value,
-      [`${event.target.name}Error`]: errorMessage,
-    });
+  const handleChange = (event: { target: { name: string; value: string } }) => {
+    const { name, value } = event.target;
+  
+    // Validate field dynamically
+    const errorMessage = validateField(name, value);
+  
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+      [`${name}Error`]: errorMessage, // Store error message dynamically
+    }));
   };
-
+  
   const handleSubmit = () => {
     try {
+      let isValid = true;
+      const newErrors: Record<string, string> = {};
+  
+      // Validate all fields before submission
+      Object.keys(formData).forEach((key) => {
+        if (!key.includes("Error")) {
+          const errorMessage = validateField(key, formData[key as keyof typeof formData]);
+          newErrors[`${key}Error`] = errorMessage;
+          if (errorMessage) isValid = false;
+        }
+      });
+  
+      // Set updated form data with errors
+      setFormData((prevData) => ({
+        ...prevData,
+        ...newErrors,
+      }));
+  
+      // Check if there are any errors before proceeding
+      if (!isValid) {
+        console.log("Validation failed:", newErrors);
+        throw new Error("fill up properly");
+        
+        
+      }
+  
+      // Modify values before submission
       setFormData((prevData) => {
         let updatedData = { ...prevData };
-
+  
         if (prevData.yearGraduated === "others") {
           updatedData.yearGraduated = otherYearGraduated;
         }
-
         if (prevData.shs === "others") {
           updatedData.shs = otherShs;
         }
-
         if (prevData.awardsReceived === "others") {
           updatedData.awardsReceived = otherAwards;
         }
-
+  
         return updatedData;
       });
-
-      // Use a timeout to wait for state updates before logging
-    } catch (error) {
-      console.log("Error submitting form:", error);
+  
+      console.log("Form submitted successfully:", formData);
+    } catch (error: any) {
+      console.log(error.message);
     }
   };
+  
   useEffect(() => {
-    console.log("Submitted Form Data:", formData);
+    console.log("Updated formData:", formData);
   }, [formData]);
   return (
     <>
