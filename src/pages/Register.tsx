@@ -13,7 +13,9 @@ import {
   FormHelperText,
 } from "@mui/material";
 import { SetStateAction, useEffect, useState } from "react";
-import { formDataRegistration, validateField } from "../constant";
+import { formDataRegistration, optionalFields, validateField } from "../constant";
+import { Bounce, toast, ToastContainer } from "react-toastify";
+import { submitForm } from "../services/axios";
 
 const customFocus = {
   color: "black", // Default color
@@ -78,36 +80,61 @@ export function FormReg() {
     });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     try {
-      if (formData.emailError != "") {
-        console.log(formData.emailError);
-      }
-      // Modify values before submission
-      setFormData((prevData) => {
-        let updatedData = { ...prevData };
-
-        if (prevData.yearGraduated === "others") {
-          updatedData.yearGraduated = otherYearGraduated;
-          console.log("changed year graduated");
+      let updatedErrors: Record<string, string> = {};
+      const allowedEmptyFields = optionalFields[formData.studentType] || [];
+  
+      // 🔍 Validate each field dynamically based on student type
+      Object.keys(formData).forEach((key) => {
+        if (!key.endsWith("Error")) {
+          if (allowedEmptyFields.includes(key)) {
+            // ✅ Ensure optional fields have no errors
+            updatedErrors[`${key}Error`] = "";
+          } else {
+            // 🛑 Validate required fields
+            const error = validateField(key, formData[key as keyof typeof formData]);
+            if (error) {
+              updatedErrors[`${key}Error`] = error;
+            }
+          }
         }
-        if (prevData.shs === "others") {
-          updatedData.shs = otherShs;
-          console.log("changed SHS");
-        }
-        if (prevData.awardsReceived === "others") {
-          updatedData.awardsReceived = otherAwards;
-          console.log("changed awards");
-        }
-
-        return updatedData;
       });
-
-      console.log("Form submitted successfully:", formData);
+  
+      // 🛑 Update state & stop submission if there are errors
+      setFormData((prevData) => ({
+        ...prevData,
+        ...updatedErrors,
+      }));
+  
+      if (Object.values(updatedErrors).some((error) => error !== "")) {
+        console.log("Validation errors:", updatedErrors);
+        toast.error("Fill up properly!", { position: "top-center" });
+        return;
+      }
+  
+      // ✅ Convert `updatedData` into FormData
+      let formDataToSend = new FormData();
+      Object.entries(formData).forEach(([key, value]) => {
+        if (!key.endsWith("Error")) {
+          formDataToSend.append(key, value);
+        }
+      });
+  
+      // ✅ Submit the form
+      console.log("Submitting form...", formDataToSend);
+      await submitForm(formDataToSend);
+  
+      toast.success("Form submitted successfully!", { position: "top-center" });
+  
     } catch (error: any) {
-      console.log(error.message);
+      console.error("Error submitting form:", error.message);
+      toast.error("Submission failed! Please try again.");
     }
   };
+  
+  
+  
 
   useEffect(() => {
     console.log("Updated formData:", formData);
@@ -1112,6 +1139,7 @@ export function FormReg() {
           </Stack>
         </FormControl>
       </Stack>
+      <ToastContainer />
     </>
   );
 }

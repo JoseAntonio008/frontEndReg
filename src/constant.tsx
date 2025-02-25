@@ -1,4 +1,43 @@
-export const formDataRegistration = {
+export type FormDataType = {
+  email: string;
+  emailError: string;
+  firstName: string;
+  firstNameError: string;
+  middleName: string;
+  middleNameError: string;
+  lastName: string;
+  lastNameError: string;
+  studentType: string;
+  studentTypeError: string;
+  residency: string;
+  residencyError: string;
+  shs: string;
+  shsError: string;
+  awardsReceived: string;
+  awardsReceivedError: string;
+  schoolType: string;
+  schoolTypeError: string;
+  schoolAddress: string;
+  schoolAddressError: string;
+  yearGraduated: string;
+  yearGraduatedError: string;
+  schoolTypeCollege: string;
+  schoolTypeCollegeError: string;
+  nameCollege: string;
+  nameCollegeError: string;
+  courseEnrolled: string;
+  courseEnrolledError: string;
+  highestAttainedYear: string;
+  highestAttainedYearError: string;
+  courseCompleter: string;
+  courseCompleterError: string;
+  courseCompleted: string;
+  courseCompletedError: string;
+  schoolGraduated: string;
+  schoolGraduatedError: string;
+};
+
+export const formDataRegistration: FormDataType = {
   email: "",
   emailError: "",
   firstName: "",
@@ -103,3 +142,28 @@ export const validateField = (name: string, value: string) => {
       return "";
   }
 };
+
+// Define which fields are allowed to be empty for each student type
+export const optionalFields: Record<string, string[]> = {
+  transferee: ["shs", "shsError"], // SHS can be empty for transferees
+  "New Student": [
+    "nameCollege",
+    "schoolTypeCollege",
+    "courseCompleted",
+    "courseCompleter",
+    "highestAttainedYear",
+    "schoolGraduated"
+    
+  ], // These fields are optional for new students
+  "2nd degree taker": [
+    "courseCompleter",
+    "courseCompleted",
+    "yearGraduated",
+    "schoolGraduated",
+    "schoolAddress",
+    "awardsReceived",
+    "residency",
+  ], // These fields are optional for second-degree takers
+};
+
+// Get the optional fields for the selected student type
