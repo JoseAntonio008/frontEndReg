@@ -43,78 +43,72 @@ export function FormReg() {
   }) => {
     setOtherYearGraduated(event.target.value);
   };
-  const handleOtherShs = (event: {
-    target: { value: SetStateAction<string> };
-  }) => {
-    setOtherShs(event.target.value);
-    console.log(otherShs);
+  const handleOtherShs = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setOtherShs(value);
 
-    // setShs(event.target.value);
-  };
-  const handleChange = (event: { target: { name: string; value: string } }) => {
-    const { name, value } = event.target;
-  
-    // Validate field dynamically
-    const errorMessage = validateField(name, value);
-  
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-      [`${name}Error`]: errorMessage, // Store error message dynamically
+    // Update formData and validate if empty
+    setFormData((prev) => ({
+      ...prev,
+      shsError:
+        prev.shs === "others" && value.trim() === "" ? "required field" : "",
     }));
   };
-  
+
+  const handleChange = (event: { target: { name: string; value: string } }) => {
+    const { name, value } = event.target;
+
+    // Validate field dynamically
+    const errorMessage = validateField(name, value);
+
+    setFormData((prevData) => {
+      let updatedData = {
+        ...prevData,
+        [name]: value,
+        [`${name}Error`]: errorMessage, // Store error message dynamically
+      };
+
+      // If "Others" is selected, check if otherShs is empty
+      if (name === "shs" && value === "others") {
+        updatedData.shsError =
+          prevData.shs.trim() === "" ? "required field" : "";
+      }
+
+      return updatedData;
+    });
+  };
+
   const handleSubmit = () => {
     try {
-      let isValid = true;
-      const newErrors: Record<string, string> = {};
-  
-      // Validate all fields before submission
-      Object.keys(formData).forEach((key) => {
-        if (!key.includes("Error")) {
-          const errorMessage = validateField(key, formData[key as keyof typeof formData]);
-          newErrors[`${key}Error`] = errorMessage;
-          if (errorMessage) isValid = false;
-        }
-      });
-  
-      // Set updated form data with errors
-      setFormData((prevData) => ({
-        ...prevData,
-        ...newErrors,
-      }));
-  
-      // Check if there are any errors before proceeding
-      if (!isValid) {
-        console.log("Validation failed:", newErrors);
-        throw new Error("fill up properly");
-        
-        
+      if (formData.emailError != "") {
+        console.log(formData.emailError);
       }
-  
       // Modify values before submission
       setFormData((prevData) => {
         let updatedData = { ...prevData };
-  
+
         if (prevData.yearGraduated === "others") {
           updatedData.yearGraduated = otherYearGraduated;
+          console.log("changed year graduated");
         }
         if (prevData.shs === "others") {
           updatedData.shs = otherShs;
+          console.log("changed SHS");
         }
         if (prevData.awardsReceived === "others") {
           updatedData.awardsReceived = otherAwards;
+          console.log("changed awards");
         }
-  
+
         return updatedData;
       });
-  
+
       console.log("Form submitted successfully:", formData);
     } catch (error: any) {
       console.log(error.message);
     }
   };
-  
+
   useEffect(() => {
     console.log("Updated formData:", formData);
   }, [formData]);
@@ -241,6 +235,9 @@ export function FormReg() {
               variant="standard"
               autoComplete="off"
               name="middleName"
+              value={formData.middleName}
+              error={!!formData.middleNameError}
+              helperText={formData.middleNameError}
               onChange={handleChange}
               sx={{ mb: "5px" }}
             ></TextField>
@@ -259,6 +256,9 @@ export function FormReg() {
               variant="standard"
               autoComplete="off"
               name="lastName"
+              value={formData.lastName}
+              error={!!formData.lastNameError}
+              helperText={formData.lastNameError}
               onChange={handleChange}
               sx={{ mb: "5px" }}
             ></TextField>
@@ -522,7 +522,9 @@ export function FormReg() {
                       label="Specify Other"
                       variant="outlined"
                       size="small"
-                      value={otherShs} // Reset input when selecting "Others"
+                      value={otherShs}
+                      error={!!formData.shsError}
+                      helperText={formData.shsError} // Reset input when selecting "Others"
                       onChange={handleOtherShs} // Directly update `shs`
                     />
                   )}
@@ -569,6 +571,8 @@ export function FormReg() {
                   label="Enter School Address here."
                   name="schoolAddress"
                   value={formData.schoolAddress}
+                  error={!!formData.schoolAddressError}
+                  helperText={formData.schoolAddressError}
                   onChange={handleChange}
                 ></TextField>
               </Stack>
@@ -612,7 +616,9 @@ export function FormReg() {
                       label="Specify Other"
                       variant="outlined"
                       size="small"
-                      value={otherYearGraduated} // Reset input when selecting "Others"
+                      value={otherYearGraduated}
+                      error={!!formData.yearGraduatedError}
+                      helperText={formData.yearGraduatedError} // Reset input when selecting "Others"
                       onChange={handleOtherYear} // Directly update `shs`
                     />
                   )}
@@ -663,7 +669,9 @@ export function FormReg() {
                       label="Specify Other"
                       variant="outlined"
                       size="small"
-                      value={otherAwards} // Reset input when selecting "Others"
+                      value={otherAwards}
+                      error={!!formData.awardsReceivedError}
+                      helperText={formData.awardsReceivedError} // Reset input when selecting "Others"
                       onChange={handleOtherAwards} // Directly update `shs`
                     />
                   )}
@@ -682,7 +690,7 @@ export function FormReg() {
                   my: "5px",
                 }}
               >
-                <FormControl error={!!formData.awardsReceivedError}>
+                <FormControl error={!!formData.schoolTypeCollegeError}>
                   <Typography variant="h6">Type of School</Typography>
                   <RadioGroup
                     aria-labelledby="typeOfSchool"
@@ -706,9 +714,9 @@ export function FormReg() {
                       control={<Radio />}
                     ></FormControlLabel>
                   </RadioGroup>
-                  {formData.awardsReceivedError && (
+                  {formData.schoolTypeCollegeError && (
                     <FormHelperText>
-                      {formData.awardsReceivedError}
+                      {formData.schoolTypeCollegeError}
                     </FormHelperText>
                   )}
                 </FormControl>
