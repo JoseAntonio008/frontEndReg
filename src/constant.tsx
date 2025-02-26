@@ -145,7 +145,17 @@ export const validateField = (name: string, value: string) => {
 
 // Define which fields are allowed to be empty for each student type
 export const optionalFields: Record<string, string[]> = {
-  transferee: ["shs", "shsError"], // SHS can be empty for transferees
+  transferee: [
+    "shs",
+
+    "schoolType",
+
+    "yearGraduated",
+
+    "courseCompleter",
+    "courseCompleted",
+    "schoolGraduated",
+  ], // SHS can be empty for transferees
   "New Student": [
     "nameCollege",
     "schoolTypeCollege",
@@ -156,14 +166,32 @@ export const optionalFields: Record<string, string[]> = {
     "courseEnrolled",
   ], // These fields are optional for new students
   "2nd degree taker": [
+    "shs",
+
+    "schoolType",
+
+    "yearGraduated",
+    "schoolTypeCollege",
+    "nameCollege",
+    "courseEnrolled",
+    "highestAttainedYear",
+  ],
+  "Returning Student": [
+    "residency",
+    "shs",
+    "awardsReceived",
+    "schoolType",
+    "schoolAddress",
+    "yearGraduated",
+    "schoolTypeCollege",
+    "nameCollege",
+    "courseEnrolled",
+    "highestAttainedYear",
     "courseCompleter",
     "courseCompleted",
-    "yearGraduated",
     "schoolGraduated",
-    "schoolAddress",
-    "awardsReceived",
-    "residency",
-  ], // These fields are optional for second-degree takers
+  ],
+  // These fields are optional for second-degree takers
 };
 
 // Get the optional fields for the selected student type

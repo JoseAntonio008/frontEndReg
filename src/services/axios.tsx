@@ -2,11 +2,11 @@ import axios from "axios";
 import { FormDataType } from "../constant";
 
 export const apiService = axios.create({
-  baseURL: "http://10.10.10.86:5000",
+  baseURL: "http://localhost:5000",
 });
 
 export const protectedService = axios.create({
-  baseURL: "http://10.10.10.86:5000",
+  baseURL: "http://localhost:5000",
 });
 
 protectedService.interceptors.request.use((config) => {
