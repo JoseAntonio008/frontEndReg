@@ -13,7 +13,11 @@ import {
   FormHelperText,
 } from "@mui/material";
 import { SetStateAction, useEffect, useState } from "react";
-import { formDataRegistration, optionalFields, validateField } from "../constant";
+import {
+  formDataRegistration,
+  optionalFields,
+  validateField,
+} from "../constant";
 import { Bounce, toast, ToastContainer } from "react-toastify";
 import { submitForm } from "../services/axios";
 
@@ -84,7 +88,7 @@ export function FormReg() {
     try {
       let updatedErrors: Record<string, string> = {};
       const allowedEmptyFields = optionalFields[formData.studentType] || [];
-  
+
       // 🔍 Validate each field dynamically based on student type
       Object.keys(formData).forEach((key) => {
         if (!key.endsWith("Error")) {
@@ -93,26 +97,29 @@ export function FormReg() {
             updatedErrors[`${key}Error`] = "";
           } else {
             // 🛑 Validate required fields
-            const error = validateField(key, formData[key as keyof typeof formData]);
+            const error = validateField(
+              key,
+              formData[key as keyof typeof formData]
+            );
             if (error) {
               updatedErrors[`${key}Error`] = error;
             }
           }
         }
       });
-  
+
       // 🛑 Update state & stop submission if there are errors
       setFormData((prevData) => ({
         ...prevData,
         ...updatedErrors,
       }));
-  
+
       if (Object.values(updatedErrors).some((error) => error !== "")) {
         console.log("Validation errors:", updatedErrors);
         toast.error("Fill up properly!", { position: "top-center" });
         return;
       }
-  
+
       // ✅ Convert `updatedData` into FormData
       let formDataToSend = new FormData();
       Object.entries(formData).forEach(([key, value]) => {
@@ -120,21 +127,17 @@ export function FormReg() {
           formDataToSend.append(key, value);
         }
       });
-  
+
       // ✅ Submit the form
-      console.log("Submitting form...", formDataToSend);
-      await submitForm(formDataToSend);
-  
+      console.log("Submitting form...", formData);
+      await submitForm(formData);
+
       toast.success("Form submitted successfully!", { position: "top-center" });
-  
     } catch (error: any) {
       console.error("Error submitting form:", error.message);
       toast.error("Submission failed! Please try again.");
     }
   };
-  
-  
-  
 
   useEffect(() => {
     console.log("Updated formData:", formData);

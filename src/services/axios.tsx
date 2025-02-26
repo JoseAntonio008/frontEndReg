@@ -1,11 +1,12 @@
 import axios from "axios";
+import { FormDataType } from "../constant";
 
 export const apiService = axios.create({
-  baseURL: "http://localhost:4000",
+  baseURL: "http://10.10.10.86:5000",
 });
 
 export const protectedService = axios.create({
-  baseURL: "http://localhost:4000",
+  baseURL: "http://10.10.10.86:5000",
 });
 
 protectedService.interceptors.request.use((config) => {
@@ -13,13 +14,19 @@ protectedService.interceptors.request.use((config) => {
   return config;
 });
 
-export const submitForm = async (formData:FormData):Promise<any> => {
+export const submitForm = async (formData: FormDataType): Promise<any> => {
   try {
-    const response = await apiService.post("/submitProfiling",formData)
+    const response = await apiService.post(
+      "/api/student/submitProfiling",
+      formData
+    );
     console.log("Form submitted successfully:", response.data);
     return response.data;
-  } catch (error:any) {
-    console.error("Error submitting form:", error.response?.data || error.message);
+  } catch (error: any) {
+    console.error(
+      "Error submitting form:",
+      error.response?.data || error.message
+    );
     throw error;
   }
-}
+};
