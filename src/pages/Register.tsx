@@ -64,6 +64,86 @@ export function FormReg() {
   const handleChange = (event: { target: { name: string; value: string } }) => {
     const { name, value } = event.target;
 
+    if (name === "studentType" && value === "transferee") {
+      setFormData((prevData) => {
+        let updatedData = {
+          ...prevData,
+          shsError: "",
+
+          schoolTypeError: "",
+
+          yearGraduatedError: "",
+
+          courseCompleterError: "",
+          courseCompletedError: "",
+          schoolGraduatedError: "",
+        };
+        console.log("exiting internal function tranferee error clearer");
+
+        return updatedData;
+      });
+    }
+    if (name === "studentType" && value === "New Student") {
+      setFormData((prevData) => {
+        let updatedData = {
+          ...prevData,
+          nameCollegeError: "",
+          schoolTypeCollegeError: "",
+          courseCompletedError: "",
+          courseCompleterError: "",
+          highestAttainedYearError: "",
+          schoolGraduatedError: "",
+          courseEnrolledError: "",
+        };
+        console.log("exiting internal function New Student error clearer");
+
+        return updatedData;
+      });
+    }
+    if (name === "studentType" && value === "2nd degree taker") {
+      setFormData((prevData) => {
+        let updatedData = {
+          ...prevData,
+          shsError: "",
+          schoolTypeError: "",
+          yearGraduatedError: "",
+          schoolTypeCollegeError: "",
+          nameCollegeError: "",
+          courseEnrolledError: "",
+          highestAttainedYearError: "",
+        };
+        console.log("exiting internal function 2nd degree taker error clearer");
+
+        return updatedData;
+      });
+    }
+    if (name === "studentType" && value === "Returning Student") {
+      setFormData((prevData) => {
+        let updatedData = {
+          ...prevData,
+          residencyError: "",
+          shsError: "",
+          awardsReceivedError: "",
+          schoolTypeError: "",
+          schoolAddressError: "",
+          yearGraduatedError: "",
+          schoolTypeCollegeError: "",
+          nameCollegeError: "",
+          courseEnrolledError: "",
+          highestAttainedYearError: "",
+          courseCompleterError: "",
+          courseCompletedError: "",
+          schoolGraduatedError: "",
+        };
+        console.log(
+          "exiting internal function Returning Student error clearer"
+        );
+
+        return updatedData;
+      });
+    }
+    console.log("continuity of function");
+
     // Validate field dynamically
     const errorMessage = validateField(name, value);
 
@@ -130,9 +210,12 @@ export function FormReg() {
 
       // ✅ Submit the form
       console.log("Submitting form...", formData);
-      await submitForm(formData);
+      const response = await submitForm(formData);
+      console.log(response);
 
-      toast.success("Form submitted successfully!", { position: "top-center" });
+      toast.success(`message:${response.data}`, {
+        position: "top-center",
+      });
     } catch (error: any) {
       console.error("Error submitting form:", error.message);
       toast.error("Submission failed! Please try again.");
@@ -312,24 +395,37 @@ export function FormReg() {
             >
               <FormControlLabel
                 value={"New Student"}
-                label="New Student - Senior High School Graduate (Never been to college) / SHS Student Graduating this Current Semester"
+                label=<span>
+                  <b>New Student</b> - Senior High School Graduate (Never been
+                  to college) / SHS Student Graduating this Current Semester
+                </span>
                 control={<Radio />}
               ></FormControlLabel>
               <FormControlLabel
                 value={"transferee"}
-                label="Transferee - A student who comes to a university or school after having begun his or her course of study at a different university or school"
+                label=<span>
+                  <b> Transferee </b> - A student who comes to a university or
+                  school after having begun his or her course of study at a
+                  different university or school
+                </span>
                 control={<Radio />}
               ></FormControlLabel>
 
               <FormControlLabel
                 value={"Returning Student"}
-                label="Returning Student - A DLSP/PLSP student who dropped out but wants to return to school."
+                label=<span>
+                  <b> Returning Student </b> - A DLSP/PLSP student who dropped
+                  out but wants to return to school.
+                </span>
                 control={<Radio />}
               ></FormControlLabel>
 
               <FormControlLabel
                 value={"2nd Degree Taker"}
-                label="2nd Degree Taker - Students who already completed a 2-year or 4-year course"
+                label=<span>
+                  <b> 2nd Degree Taker </b> - Students who already completed a
+                  2-year or 4-year course
+                </span>
                 control={<Radio />}
               ></FormControlLabel>
             </RadioGroup>

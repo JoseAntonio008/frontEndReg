@@ -165,11 +165,9 @@ export const optionalFields: Record<string, string[]> = {
     "schoolGraduated",
     "courseEnrolled",
   ], // These fields are optional for new students
-  "2nd degree taker": [
+  "2nd Degree Taker": [
     "shs",
-
     "schoolType",
-
     "yearGraduated",
     "schoolTypeCollege",
     "nameCollege",
